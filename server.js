@@ -5,7 +5,7 @@ var path = require("path");
 var fs= require("fs");
 
 
-var PORT= 3000; 
+var PORT= process.env.PORT||3000 ; 
 
 // ---Json middlewere-- express translator to json. 
 app.use(express.urlencoded({ extended: true }));
@@ -29,7 +29,7 @@ app.get("/api/notes", function(req, res) {
         //test if readFile is working
         console.log(data)
         // return data
-        res.json(data)
+        res.jsonp(data)
     })
 }); 
 
