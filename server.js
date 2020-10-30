@@ -1,7 +1,9 @@
+// Dependecies
 var express = require("express");
 var app = express();
 var path = require("path"); 
 var fs= require("fs");
+
 
 var PORT= 3000; 
 
@@ -26,11 +28,9 @@ app.get("/api/notes", function(req, res) {
         }
         //test if readFile is working
         console.log(data)
+        // return data
+        res.json(data)
     })
-
-
-
-
 }); 
 
 app.get("*", function(req, res) {
