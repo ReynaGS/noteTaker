@@ -7,9 +7,11 @@ var fs= require("fs");
 
 var PORT= process.env.PORT||3000 ; 
 
-// ---Json middlewere-- express translator to json. 
+// ---Json middlewere-- 12. express translator to json. 13. look for css. 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('public'));
+
 
 app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, "public/notes.html"));
@@ -29,14 +31,22 @@ app.get("/api/notes", function(req, res) {
         //test if readFile is working
         console.log(data)
         // return data
-        res.jsonp(data)
+        res.send(data)
     })
 }); 
+
+app.post("/api/notes",function(req,res)
+  {
+
+  }
+ );
 
 app.get("*", function(req, res) {
   res.sendFile(path.join(__dirname, "public/index.html"));
   
 });
+
+
 
 app.listen(PORT, function() {
   console.log("App listening on PORT " + PORT)});
