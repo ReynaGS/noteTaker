@@ -29,9 +29,10 @@ app.get("/api/notes", function(req, res) {
             throw "Error"
         }
         //test if readFile is working
-        console.log(data)
+        var dataToJason = JSON.parse(data); 
+        console.log(dataToJason); 
         // return data
-        res.send(data)
+        res.json(dataToJason); 
     })
 }); 
 
