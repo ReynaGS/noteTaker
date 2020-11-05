@@ -3,6 +3,7 @@ var express = require("express");
 var app = express();
 var path = require("path"); 
 var fs= require("fs");
+const { notEqual } = require("assert");
 
 
 var PORT= process.env.PORT||3000 ; 
@@ -16,10 +17,12 @@ app.use(express.static('public'));
 app.get("/notes", function(req, res) {
   res.sendFile(path.join(__dirname, "public/notes.html"));
 });
+
+ // create a variable to hold path to db json
+var dbPath = path.join(__dirname, "db/db.json")
 //respond with hard coded notes from db.json
 app.get("/api/notes", function(req, res) {
-    // create a variable to hold path
-    var dbPath = path.join(__dirname, "db/db.json")
+   
     //test to see if route is working
     console.log(dbPath);
     //read file ( 3 parameters. 1- Path, 2- "utf-8", 3- call back function with 2 params)
@@ -36,8 +39,36 @@ app.get("/api/notes", function(req, res) {
     })
 }); 
 
+  function saveNote(nota){
+    
+  const data = fs.readFileSync(dbPath, {encoding:'utf8', flag:'r'}); 
+  
+  // Display the file data 
+    // convert to js object
+  var noteList =  JSON.parse(data); 
+  noteList.push(nota); 
+    console.log(noteList);
+    // fs. waits for a string but in this case we need JSON string. 
+  var noteListStr = JSON.stringify(noteList)  
+  fs.writeFileSync(dbPath, noteListStr);
+}
+
 app.post("/api/notes",function(req,res)
   {
+    var idDate = new Date().valueOf(); 
+    console.log(idDate); 
+    // console.log(req.body); 
+    // create note
+    var newNote = {
+      title : req.body.title, 
+      text : req.body.text, 
+      id : idDate
+    }
+    // save note
+    saveNote(newNote); 
+
+    //return  note client
+    res.json(newNote); 
 
   }
  );
@@ -46,7 +77,6 @@ app.get("*", function(req, res) {
   res.sendFile(path.join(__dirname, "public/index.html"));
   
 });
-
 
 
 app.listen(PORT, function() {
