@@ -33,7 +33,7 @@ app.get("/api/notes", function(req, res) {
         }
         //test if readFile is working
         var dataToJason = JSON.parse(data); 
-        console.log(dataToJason); 
+        // console.log(dataToJason); 
         // return data
         res.json(dataToJason); 
     })
@@ -47,7 +47,7 @@ app.get("/api/notes", function(req, res) {
     // convert to js object
   var noteList =  JSON.parse(data); 
   noteList.push(nota); 
-    console.log(noteList);
+    // console.log(noteList);
     // fs. waits for a string but in this case we need JSON string. 
   var noteListStr = JSON.stringify(noteList)  
   fs.writeFileSync(dbPath, noteListStr);
@@ -56,7 +56,7 @@ app.get("/api/notes", function(req, res) {
 app.post("/api/notes",function(req,res)
   {
     var idDate = new Date().valueOf(); 
-    console.log(idDate); 
+    // console.log(idDate); 
     // console.log(req.body); 
     // create note
     var newNote = {
@@ -69,9 +69,39 @@ app.post("/api/notes",function(req,res)
 
     //return  note client
     res.json(newNote); 
-
   }
  );
+ function deleteNote(noteid){
+   // get notes from db json - fs readfile. Return json string needs to be parse to 
+   var dato = fs.readFileSync(dbPath, {encoding:'utf8', flag:'r'});
+  //  console.log(dato); 
+   var datoToOb = JSON.parse(dato); 
+  //  console.log(datoToOb); 
+   //iterate through array of notes, find where id ==== id to be delete
+   for(var index=0; index < datoToOb.length; index= index+1)
+    { 
+      // console.log(index); 
+      // variable to store and indexar id 
+      var idIndex = datoToOb[index];
+        // splice note from  with matching id
+      if(noteid==idIndex.id)
+         {
+         datoToOb.splice(index,1); 
+         } 
+    }
+    var upDatoOb = JSON.stringify(datoToOb);
+    fs.writeFileSync(dbPath, upDatoOb); 
+   // save new file with updated array -- fs writefileSync
+
+ }
+ 
+app.delete("/api/notes/:id", function(req,res){
+  // console.log(req.params); 
+  
+  deleteNote(req.params.id); 
+    // return request
+    res.end() ; 
+})
 
 app.get("*", function(req, res) {
   res.sendFile(path.join(__dirname, "public/index.html"));
